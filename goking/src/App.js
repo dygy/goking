@@ -2,16 +2,18 @@ import './App.css';
 import { hot } from 'react-hot-loader/root';
 function App() {
     try {
-        console.log(window.getOS());
+        // console.log(window.getOS());
     } catch (e) {
         //
     }
   return (
     <div className="App">
+        2222
       <header className="App-header">
         <div className={'btn-row'}>
-          <button className={'btn'}>1</button>
-          <button className={'btn'}>2</button>
+            <button onClick={()=>window.location?.reload()} className={'btn'}>sk,/SASDSDdss ls</button>
+            <button className={'btn'}>{Math.random()*10}</button>
+            <button className={'btn'}>{Math.random()*10}</button>
         </div>
       </header>
     </div>
