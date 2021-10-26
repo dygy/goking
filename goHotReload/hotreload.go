@@ -37,7 +37,7 @@ func hotReload() {
 		for {
 			select {
 			case event := <-w.Event:
-				if event.Name() == "src" {
+				if event.Name() == "src" || event.Name() == "binds" {
 					rebuildCMD := exec.Command("npm", "run", "standard-build")
 					dir, _ := filepath.Abs("")
 					rebuildCMD.Dir = path.Join(dir, "/goking/")
@@ -65,6 +65,10 @@ func hotReload() {
 	}()
 
 	if err := w.AddRecursive("./goking/src"); err != nil {
+		log.Println(err)
+	}
+
+	if err := w.AddRecursive("./binds"); err != nil {
 		log.Println(err)
 	}
 

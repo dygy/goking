@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/zserge/lorca"
 	"log"
+	"main/binds"
 	"net"
 	"net/http"
 	"os"
@@ -30,12 +31,7 @@ func updateScene() {
 	}
 	defer ui.Close()
 
-	ui.Bind("start", func() {
-		log.Println("UI is ready")
-	})
-	c := &counter{}
-	ui.Bind("getOS", c.getOS)
-
+	binds.SetUp(ui)
 	ln, err = net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)
