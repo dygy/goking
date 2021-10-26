@@ -16,11 +16,15 @@ func (Controller *counter) getOS() string {
 	return runtime.GOOS
 }
 
+func (Controller *counter) getStr() string {
+	return "LOL KEK CHEBUREK 111"
+}
+
 func SetUp(ui lorca.UI) {
 	ui.Bind("start", func() {
 		log.Println("UI is on")
 	})
 	c := &counter{}
 	ui.Bind("getOS", c.getOS)
-
+	ui.Bind("getStr", c.getStr)
 }

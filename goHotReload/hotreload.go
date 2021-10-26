@@ -24,7 +24,7 @@ func main() {
 		err := last().Run()
 		last().Stderr = &stderr
 		if err != nil {
-			fmt.Println("starter " + fmt.Sprint(err) + ": " + stderr.String())
+			fmt.Println("starter " + fmt.Sprint(err))
 		}
 	}
 }
@@ -37,24 +37,10 @@ func hotReload() {
 		for {
 			select {
 			case event := <-w.Event:
-				if event.Name() == "src" || event.Name() == "binds" {
-					rebuildCMD := exec.Command("npm", "run", "standard-build")
-					dir, _ := filepath.Abs("")
-					rebuildCMD.Dir = path.Join(dir, "/goking/")
-					out, err := rebuildCMD.Output()
-					if err != nil {
-						log.Println(err)
-					}
-					if out != nil {
-						log.Println("forceClearCache")
-						log.Println("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
-						kill := exec.Command("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
-						kill.Stderr = &stderr
-						err := kill.Run()
-						if err != nil {
-							fmt.Println("kill " + fmt.Sprint(err) + ": " + stderr.String())
-						}
-					}
+				if event.Name() == "src" {
+					rerun(true)
+				} else if event.Name() == "binds" {
+					rerun(false)
 				}
 			case err := <-w.Error:
 				log.Println(err)
@@ -64,13 +50,8 @@ func hotReload() {
 		}
 	}()
 
-	if err := w.AddRecursive("./goking/src"); err != nil {
-		log.Println(err)
-	}
-
-	if err := w.AddRecursive("./binds"); err != nil {
-		log.Println(err)
-	}
+	addSource(w, "./binds")
+	addSource(w, "./goking/src")
 
 	if err := w.Start(time.Millisecond * 100); err != nil {
 		log.Println(err)
@@ -78,5 +59,41 @@ func hotReload() {
 }
 
 func last() *exec.Cmd {
-	return runCMD[len(runCMD)-1]
+	if len(runCMD) > 0 {
+		return runCMD[len(runCMD)-1]
+	} else {
+		return nil
+	}
+}
+
+func addSource(w *watcher.Watcher, path string) {
+	if err := w.AddRecursive(path); err != nil {
+	}
+}
+
+func rerun(isReact bool) {
+	var out []byte
+	if isReact {
+		rebuildCMD := exec.Command("npm", "run", "standard-build")
+		dir, _ := filepath.Abs("")
+		rebuildCMD.Dir = path.Join(dir, "/goking/")
+		output, err := rebuildCMD.Output()
+		if err != nil {
+			log.Println(err)
+		}
+		out = output
+	} else {
+		out = []byte("go")
+	}
+
+	if out != nil {
+		log.Println("forceClearCache")
+		log.Println("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
+		kill := exec.Command("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
+		kill.Stderr = &stderr
+		err := kill.Run()
+		if err != nil {
+			fmt.Println("kill " + fmt.Sprint(err))
+		}
+	}
 }
