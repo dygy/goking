@@ -16,7 +16,7 @@
   "scripts": {
     "start": "react-scripts start",
     "standard-build": "react-scripts build NODE_ENV=production webpack --mode product",
-    "build": "react-scripts build NODE_ENV=production webpack --mode product && cd.. && go run index.go",
+    "build": "react-scripts build NODE_ENV=production webpack --mode product && cd.. && go run main",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
