@@ -37,8 +37,6 @@ func hotReload() {
 		for {
 			select {
 			case event := <-w.Event:
-				// Print the event's info.
-				log.Println(event.Name())
 				if event.Name() == "src" {
 					rebuildCMD := exec.Command("npm", "run", "standard-build")
 					dir, _ := filepath.Abs("")
@@ -59,26 +57,20 @@ func hotReload() {
 					}
 				}
 			case err := <-w.Error:
-				log.Println("exit?2")
 				log.Println(err)
 			case <-w.Closed:
-				log.Println("exit?1")
-				hotReload()
 				return
 			}
 		}
 	}()
+
 	if err := w.AddRecursive("./goking/src"); err != nil {
 		log.Println(err)
-		log.Println("exit?5")
 	}
 
-	// Start the watching process - it'll check for changes every 100ms.
 	if err := w.Start(time.Millisecond * 100); err != nil {
 		log.Println(err)
-		log.Println("exit?4")
 	}
-	log.Println("exit?3")
 }
 
 func last() *exec.Cmd {

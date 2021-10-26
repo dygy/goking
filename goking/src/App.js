@@ -10,7 +10,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div className={'btn-row'}>
-            1
             <button className={'btn'}>{Math.random()*10}</button>
             <button className={'btn'}>{Math.random()*10}</button>
             <button className={'btn'}>{Math.random()*10}</button>
