@@ -8,12 +8,12 @@ function App() {
         <div className="App">
             <p style={{
                 color: 'white',
-                fontSize: '12px',
+                fontSize: '11px',
                 width: '100vw',
                 height: '300px',
                 position: 'absolute',
-                top: 25,
-                left: 16,
+                top: 15,
+                left: 15,
                 display: 'flex',
                 flexWrap: 'wrap',
             }}>

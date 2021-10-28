@@ -9,16 +9,19 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+	"sync"
 	"time"
 )
 
 var runCMD []*exec.Cmd
 var stderr bytes.Buffer
+var wg sync.WaitGroup
 
 func main() {
+	go func() { hotReload() }()
 	for {
 		fmt.Printf("%v+\n", time.Now())
-		go func() { hotReload() }()
+		wg.Wait()
 		runCMD = append(runCMD, exec.Command("go", "run", "main"))
 		last().Dir, _ = filepath.Abs("")
 		err := last().Run()
@@ -26,6 +29,7 @@ func main() {
 		if err != nil {
 			fmt.Println("starter " + fmt.Sprint(err))
 		}
+		wg.Add(1)
 	}
 }
 
@@ -72,28 +76,23 @@ func addSource(w *watcher.Watcher, path string) {
 }
 
 func rerun(isReact bool) {
-	var out []byte
+	log.Println("forceClearCache")
+	log.Println("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
+	kill := exec.Command("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
+	kill.Stderr = &stderr
+	err := kill.Run()
+	if err != nil {
+		fmt.Println("kill " + fmt.Sprint(err))
+	}
+
 	if isReact {
 		rebuildCMD := exec.Command("npm", "run", "standard-build")
 		dir, _ := filepath.Abs("")
 		rebuildCMD.Dir = path.Join(dir, "/goking/")
-		output, err := rebuildCMD.Output()
+		err := rebuildCMD.Run()
 		if err != nil {
 			log.Println(err)
 		}
-		out = output
-	} else {
-		out = []byte("go")
 	}
-
-	if out != nil {
-		log.Println("forceClearCache")
-		log.Println("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
-		kill := exec.Command("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
-		kill.Stderr = &stderr
-		err := kill.Run()
-		if err != nil {
-			fmt.Println("kill " + fmt.Sprint(err))
-		}
-	}
+	wg.Done()
 }

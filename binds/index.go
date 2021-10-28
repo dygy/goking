@@ -17,7 +17,7 @@ func (Controller *counter) getOS() string {
 }
 
 func (Controller *counter) getStr() string {
-	return "LOL KEK CHEBUREK 111"
+	return "LOL KEK 111 1"
 }
 
 func SetUp(ui lorca.UI) {
