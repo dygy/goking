@@ -18,7 +18,9 @@ var stderr bytes.Buffer
 var wg sync.WaitGroup
 
 func main() {
-	go func() { hotReload() }()
+	go func() {
+		hotReload()
+	}()
 	for {
 		fmt.Printf("%v+\n", time.Now())
 		wg.Wait()
@@ -29,7 +31,6 @@ func main() {
 		if err != nil {
 			fmt.Println("starter " + fmt.Sprint(err))
 		}
-		wg.Add(1)
 	}
 }
 
@@ -76,6 +77,7 @@ func addSource(w *watcher.Watcher, path string) {
 }
 
 func rerun(isReact bool) {
+	wg.Add(1)
 	log.Println("forceClearCache")
 	log.Println("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
 	kill := exec.Command("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
@@ -94,5 +96,6 @@ func rerun(isReact bool) {
 			log.Println(err)
 		}
 	}
+	log.Println(wg)
 	wg.Done()
 }
