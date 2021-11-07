@@ -24,7 +24,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Goking</title>
     <script src="wasm/wasm_exec.js"></script>
   </head>
   <body>
@@ -43,8 +43,10 @@
         const go = new Go()
 
         return new Promise((resolve, reject) => {
+          console.log(go);
           WebAssembly.instantiateStreaming(fetch(path), go.importObject)
                   .then(result => {
+                    console.log(go, result);
                     go.run(result.instance)
                     resolve(result.instance)
                   })
@@ -56,9 +58,9 @@
 
       // Load the wasm file
       loadWasm("./wasm/main.wasm").then(wasm => {
-        alert("main.wasm is loaded 👋")
+        console.log(wasm)
       }).catch(error => {
-        alert("ouch", error)
+        console.log("ouch", error)
       })
 
     </script>

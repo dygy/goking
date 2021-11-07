@@ -18,6 +18,9 @@
   "scripts": {
     "start": "react-scripts start",
     "standard-build": "react-scripts build NODE_ENV=production webpack --mode product",
+    "wasm-server": "node index.js",
+    "wasm-build": "cd public/wasm && GOOS=js GOARCH=wasm go build -o main.wasm",
+    "wasm-build-windows": "start \"\" \"%PROGRAMFILES%\\Git\\bin\\sh.exe\" -c \"cd public/wasm && GOOS=js GOARCH=wasm go build -o main.wasm\"  --login",
     "build": "react-scripts build NODE_ENV=production webpack --mode product && cd.. && go run main",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
