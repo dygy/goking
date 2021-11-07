@@ -32,6 +32,7 @@ function App() {
                     <button className={'btn'}>{Math.random()*10}</button>
                     <button className={'btn'}>{Math.random()*10}</button>
                     <button className={'btn'}>{Math.random()*10}</button>
+                    <button className={'btn'}>{Math.random()*10}</button>
                 </div>
             </header>
         </div>

@@ -24,9 +24,14 @@ func main() {
 					justify-content: space-around;
 				`,
 			[]js.Value{
-				createElement("h1", "", empty, "12"),
 				createElement("h1", "", empty, "123"),
 				createElement("h1", "", empty, "123"),
+				createElement("h1", "", empty, "123"),
+				createElement("p", "", []js.Value{
+					createElement("strong", "", empty, "123"),
+					createElement("h3", "", empty, "123"),
+					createElement("code", "", empty, "123"),
+				}, ""),
 			},
 			""),
 	)
