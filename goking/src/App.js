@@ -7,7 +7,7 @@ wasm();
 function App() {
     const [resp, setResp] = useState(null)
     if (window.getStr) {
-        window.getStr()?.then(setResp)
+        window.getStr().then(setResp)
     }
     return (
         <div className="App">
