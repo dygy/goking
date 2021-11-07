@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"github.com/zserge/lorca"
 	"log"
@@ -11,6 +12,11 @@ import (
 	"os/signal"
 	"runtime"
 )
+
+//go:embed www
+var fs embed.FS
+var ui lorca.UI
+var ln net.Listener
 
 func updateScene() {
 	if ui != nil {

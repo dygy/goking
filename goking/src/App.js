@@ -1,9 +1,14 @@
 import './App.css';
 import { hot } from 'react-hot-loader/root';
 import {useState} from "react";
+import wasm from "./wasm";
+
+wasm();
 function App() {
     const [resp, setResp] = useState(null)
-    window.getStr()?.then(setResp)
+    if (window.getStr) {
+        window.getStr()?.then(setResp)
+    }
     return (
         <div className="App">
             <p style={{
@@ -18,7 +23,7 @@ function App() {
                 flexWrap: 'wrap',
             }}>
                 {Object.keys(window)
-                    .map((e) => <span style={{margin: 3}}>{e}</span>)
+                    .map((e) => <span key={e} style={{margin: 3}}>{e}</span>)
                 }
             </p>
             <header className="App-header">
