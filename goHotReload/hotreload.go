@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"sync"
 	"time"
@@ -43,9 +44,11 @@ func hotReload() {
 			select {
 			case event := <-w.Event:
 				if event.Name() == "src" {
-					rerun(true)
+					rerun(true, false)
 				} else if event.Name() == "binds" {
-					rerun(false)
+					rerun(false, false)
+				} else if event.Name() == "wasm" {
+					rerun(true, true)
 				}
 			case err := <-w.Error:
 				log.Println(err)
@@ -57,6 +60,7 @@ func hotReload() {
 
 	addSource(w, "./binds")
 	addSource(w, "./goking/src")
+	addSource(w, "./goking/wasm")
 
 	if err := w.Start(time.Millisecond * 100); err != nil {
 		log.Println(err)
@@ -76,7 +80,7 @@ func addSource(w *watcher.Watcher, path string) {
 	}
 }
 
-func rerun(isReact bool) {
+func rerun(isReact bool, isWASM bool) {
 	wg.Add(1)
 	log.Println("forceClearCache")
 	log.Println("taskkill", "/T", "/F", "/PID", strconv.Itoa(last().Process.Pid))
@@ -88,6 +92,9 @@ func rerun(isReact bool) {
 	}
 
 	if isReact {
+		if isWASM {
+			buildWASM()
+		}
 		rebuildCMD := exec.Command("npm", "run", "standard-build")
 		dir, _ := filepath.Abs("")
 		rebuildCMD.Dir = path.Join(dir, "/goking/")
@@ -98,4 +105,20 @@ func rerun(isReact bool) {
 	}
 	log.Println(wg)
 	wg.Done()
+}
+
+func buildWASM() {
+	var runner string
+	if runtime.GOOS == "windows" {
+		runner = "wasm-build-windows"
+	} else {
+		runner = "wasm-build"
+	}
+	rebuildCMD := exec.Command("npm", "run", runner)
+	dir, _ := filepath.Abs("")
+	rebuildCMD.Dir = path.Join(dir, "/goking/")
+	err := rebuildCMD.Run()
+	if err != nil {
+		log.Println(err)
+	}
 }
